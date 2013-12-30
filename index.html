@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+        background: black;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container" style="position:relative; width:1000px; height:600px;margin:0 auto;">
+      <canvas id="myCanvas" width="1000" height="600" style="cursor:crosshair"></canvas>
+    </div>
+    <script>
+      var canvas = document.getElementById('myCanvas');
+      var ctx = canvas.getContext('2d');
+      var centerX = canvas.width / 2;
+      var centerY = canvas.height / 2;
+      var radius = 2;
+      var decalX = document.getElementById("container").offsetLeft;
+
+      ctx.fillStyle = "rgb(0,0,0)";
+      ctx.fillRect (0, 0, 55, 50);
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      ctx.fillStyle = 'rgb(255,255,255)';
+      ctx.fill();
+      
+
+
+
+      /** Interaction **/
+
+      document.getElementById("myCanvas").onclick = function(event){
+        addStar(event);
+      };
+
+
+      function addStar(event) {
+        decalX = document.getElementById("container").offsetLeft;
+        newCenter = event.x - decalX;
+
+        ctx.beginPath();
+        ctx.arc(newCenter, event.y, radius, 0, 2 * Math.PI, false);
+        ctx.fillStyle = 'rgb(255,255,255)';
+        ctx.fill();
+
+        addBubble(newCenter, event.y);
+        
+      }
+
+
+      function addBubble(posX, posY){
+        var invite = prompt('Pour 2014, je vous souhaite...','');
+
+        if (invite!=null)  {
+          var newdiv = document.createElement('div');
+          var divIdName = 'voeu'+ Date.now();
+          newdiv.setAttribute('id',divIdName);
+          newdiv.innerHTML = invite;
+          newdiv.style.position = "absolute";
+          newdiv.style.color = 'white';
+          newdiv.style.top = posY + 'px';
+          newdiv.style.left = posX + 'px';
+          document.getElementById('container').appendChild(newdiv);
+
+          stockEtoile(invite, posX, posY);
+        }
+
+      }
+
+
+      var url = 'http://remi.bezeux.fr/voeux2014/store';
+
+      function stockEtoile(texte, posX, posY) {
+        var httpRequest;
+        if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+            httpRequest = new XMLHttpRequest();
+        } else if (window.ActiveXObject) { // IE 8 and older
+            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+         httpRequest.onreadystatechange = alertContents;
+        httpRequest.open('POST', url);
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        httpRequest.send('posx=' + encodeURIComponent(posX) + '&posy=' + encodeURIComponent(posY) + "&text=" + encodeURIComponent(texte));
+
+
+      }
+
+      alertContents = function () {
+        alert('d');
+      }
+
+
+    </script>
+  </body>
+</html>
